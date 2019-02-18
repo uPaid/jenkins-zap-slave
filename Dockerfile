@@ -9,7 +9,7 @@ ARG ZAP_BASE_URL=https://github.com/zaproxy/zaproxy/releases/download/${ZAP_VERS
 ARG CHROME_VERSION="google-chrome-stable"
 ARG FIREFOX_VERSION="firefox"
 
-ENV JENKINS_HOME /home/jenkins
+ENV JENKINS_HOME /var/jenkins_home
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "$JENKINS_HOME/.m2"
 
@@ -65,9 +65,13 @@ RUN useradd -d "$JENKINS_HOME" -m -s /bin/bash ${user}
 RUN sed -i 's|session required pam_loginuid.so|session optional pam_loginuid.so|g' /etc/pam.d/sshd
 RUN mkdir -p /var/run/sshd
 RUN echo "jenkins:jenkins" | chpasswd
-RUN mkdir /home/jenkins/.ssh ; chmod 700 /home/jenkins/.ssh ; printf "Host review.upaid.pl\n  KexAlgorithms +diffie-hellman-group1-sha1" >/home/jenkins/.ssh/config
+
+USER jenkins
+
+RUN mkdir /var/jenkins_home/.ssh ; chmod 700 /var/jenkins_home/.ssh ; printf "Host review.upaid.pl\n  KexAlgorithms +diffie-hellman-group1-sha1" >/var/jenkins_home/.ssh/config
 
 
 EXPOSE 2022
 
 CMD /usr/sbin/sshd -p 2022 -D
+
