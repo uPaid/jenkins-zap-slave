@@ -70,8 +70,9 @@ USER jenkins
 
 RUN mkdir /var/jenkins_home/.ssh ; chmod 700 /var/jenkins_home/.ssh ; printf "Host review.upaid.pl\n  KexAlgorithms +diffie-hellman-group1-sha1" >/var/jenkins_home/.ssh/config
 
-
 EXPOSE 2022
+
+USER root
 
 CMD /usr/sbin/sshd -p 2022 -D
 
